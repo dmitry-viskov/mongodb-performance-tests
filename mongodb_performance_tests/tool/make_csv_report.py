@@ -1,15 +1,17 @@
+# -*- coding: utf-8 -*-
+
 import os
 import csv
 import datetime
 
 from ..settings import MAX_PROCESSES, CSV_REPORTS_DIR
-from ..common import adapter_factory
+from ..common import adapter_factory, get_adapter_from_command_line
 
 
 class ReportsCreator(object):
 
-    def make(self):
-        adapter = adapter_factory()
+    def make(self, db_adapter):
+        adapter = adapter_factory(db_adapter)
 
         result = []
 
@@ -18,7 +20,7 @@ class ReportsCreator(object):
             result.append([str(v[0] if isinstance(v, (tuple, list)) else v.itervalues().next()).replace('.', ',')
                            for v in res])
 
-        csv_path = os.path.join(CSV_REPORTS_DIR, 'result %s.csv' % str(datetime.datetime.now()))
+        csv_path = os.path.join(CSV_REPORTS_DIR, 'result-%s %s.csv' % (str(db_adapter), str(datetime.datetime.now())))
 
         with open(csv_path, 'w') as f:
             writer = csv.writer(f)
@@ -31,4 +33,4 @@ class ReportsCreator(object):
 
 if __name__ == '__main__':
     r = ReportsCreator()
-    r.make()
+    r.make(get_adapter_from_command_line())

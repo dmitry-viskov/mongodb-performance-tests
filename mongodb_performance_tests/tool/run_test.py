@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
+
 import time
 import random
 
 from multiprocessing.pool import Pool
 from ..settings import DOCS_PER_USER, MAX_PROCESSES, USERS_COUNT
-from ..common import adapter_factory
+from ..common import adapter_factory, get_adapter_from_command_line
 
 
 def create_users(params):
@@ -11,6 +13,7 @@ def create_users(params):
 
     user_id = params['user_id']
     docs_per_user = params['docs_per_user']
+    db_adapter = params['db_adapter']
     is_deleted = bool(random.randint(0, 1))
 
     new_users = []
@@ -20,17 +23,20 @@ def create_users(params):
         email = 'doc%d@user%d.com' % (i, user_id)
         new_users.append({'user_id': user_id, 'name': name, 'email': email, 'is_deleted': is_deleted})
 
-    adapter = adapter_factory()
+    adapter = adapter_factory(db_adapter)
     adapter.create_users(new_users)
 
     return time.time() - start
 
 
-def update_users(user_id):
+def update_users(params):
+    user_id = params['user_id']
+    db_adapter = params['db_adapter']
+
     start = time.time()
     is_deleted = bool(random.randint(0, 1))
 
-    adapter = adapter_factory()
+    adapter = adapter_factory(db_adapter)
     adapter.update_user(user_id, {"is_deleted": is_deleted})
 
     return time.time() - start
@@ -38,16 +44,16 @@ def update_users(user_id):
 
 class MainTest(object):
 
-    def run(self):
+    def run(self, db_adapter):
         print 'Prepare database'
-        adapter = adapter_factory()
+        adapter = adapter_factory(db_adapter)
         adapter.prepare_db()
 
         print ''
         print 'Create user documents'
 
         pool = Pool(processes=10)
-        params = [{'user_id': i, 'docs_per_user': DOCS_PER_USER}
+        params = [{'user_id': i, 'docs_per_user': DOCS_PER_USER, 'db_adapter': db_adapter}
                   for i in range(1, USERS_COUNT + 1)]
 
         start = time.time()
@@ -64,7 +70,7 @@ class MainTest(object):
         for i in range(1, MAX_PROCESSES + 1):
             print 'Run test with %d proceses' % i
             pool = Pool(processes=i)
-            params = range(1, USERS_COUNT + 1)
+            params = [{'user_id': j, 'db_adapter': db_adapter} for j in range(1, USERS_COUNT + 1)]
             start = time.time()
                 
             try:
@@ -87,4 +93,4 @@ class MainTest(object):
 
 if __name__ == '__main__':
     mt = MainTest()
-    mt.run()
+    mt.run(get_adapter_from_command_line())

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import MySQLdb
-from ..settings import DATABASE_NAME, DATABASE_HOST, DATABASE_PORT, DATABASE_USER, DATABASE_PASSWORD
+from ..settings import MYSQL_DATABASE_NAME, MYSQL_DATABASE_HOST, MYSQL_DATABASE_PORT,\
+    MYSQL_DATABASE_USER, MYSQL_DATABASE_PASSWORD
 
 
 class MySqlDBAdapter(object):
@@ -9,12 +10,20 @@ class MySqlDBAdapter(object):
     cursor = None
 
     def __init__(self):
-        self.conn = MySQLdb.connect(host=DATABASE_HOST, port=DATABASE_PORT,
-                                    user=DATABASE_USER, passwd=DATABASE_PASSWORD, db=DATABASE_NAME)
+        self.conn = MySQLdb.connect(host=MYSQL_DATABASE_HOST, port=MYSQL_DATABASE_PORT,
+                                    user=MYSQL_DATABASE_USER, passwd=MYSQL_DATABASE_PASSWORD, db=MYSQL_DATABASE_NAME)
         self.cursor = self.conn.cursor()
 
+    def get_name(self):
+        return 'MySQL'
+
     def prepare_db(self):
-        self.cursor.execute('DROP TABLE IF EXISTS users')
+        try:
+            self.cursor.execute('DROP TABLE IF EXISTS users')
+            self.cursor.execute('DROP TABLE IF EXISTS results')
+        except MySQLdb.Warning, e:
+            pass
+
         self.cursor.execute(
             "CREATE TABLE `users` (\
                 `id` int(11) NOT NULL AUTO_INCREMENT,\
@@ -26,7 +35,6 @@ class MySqlDBAdapter(object):
                 KEY `user_id_is_deleted` (`user_id`,`is_deleted`)\
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8")
 
-        self.cursor.execute('DROP TABLE IF EXISTS results')
         self.cursor.execute(
             "CREATE TABLE `results` (\
                 `id` int(11) NOT NULL AUTO_INCREMENT,\
@@ -49,7 +57,7 @@ class MySqlDBAdapter(object):
         values = params.values()
         values.append(user_id)
 
-        self.cursor.execute(''.join(['UPDATE test SET ', update_str, ' WHERE user_id=%s']), values)
+        self.cursor.execute(''.join(['UPDATE users SET ', update_str, ' WHERE user_id=%s']), values)
         self.conn.commit()
 
     def save_results(self, result_lst, processes_num):
@@ -61,6 +69,13 @@ class MySqlDBAdapter(object):
 
     def get_result_by_processes(self, process):
         self.cursor.execute("""SELECT value FROM results WHERE processes = %s""", (process,))
-        results = self.cursor.fetchall()
+        res = self.cursor.fetchall()
         self.conn.commit()
-        return results
+
+        data = []
+        i = 1
+
+        for val in res:
+            data.append([i, float(val[0])])
+            i += 1
+        return data

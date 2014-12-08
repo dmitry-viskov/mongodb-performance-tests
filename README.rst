@@ -24,5 +24,34 @@ How to run it
 ::
 
   source venv/bin/activate
-  python -m mongodb_performance_tests.tool.run_test
-  python -m mongodb_performance_tests.tool.make_csv_report
+
+  # to run performance test using MongoDB as database
+  python -m mongodb_performance_tests.tool.run_test mongodb
+
+  # to run performance test using MySQL as database
+  python -m mongodb_performance_tests.tool.run_test mysql
+
+  # get results in csv format
+  python -m mongodb_performance_tests.tool.make_csv_report mongodb
+  python -m mongodb_performance_tests.tool.make_csv_report mysql
+
+  # run simple web site that show result of performance tests in graphics
+  python -m mongodb_performance_tests.web.main
+
+
+MySQL recommended settings
+=============
+
+::
+
+  [mysqld]
+  ...
+  # 30-40% RAM
+  key_buffer = 1024M
+  ...
+  # 70-80% RAM
+  innodb_buffer_pool_size = 2048M
+  ...
+  # 1/4 of "innodb_buffer_pool_size" value
+  innodb_log_file_size = 512M
+
