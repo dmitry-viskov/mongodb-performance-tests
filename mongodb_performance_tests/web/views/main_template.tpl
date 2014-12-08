@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
+<title>MongoDB performance tests</title>
 <script type="text/javascript" src="/static/jquery.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
