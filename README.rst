@@ -27,6 +27,12 @@ The recommended way is to use virtualenv to run these tests:
   virtualenv --no-site-packages --prompt="(mongodb-performance-tests)" venv
   source venv/bin/activate
   pip install -r requirements.txt
+  
+After you have created virtualenv directory you should update settings.py file to implement your own enviroment settings:
+
+.. code-block:: bash
+
+  vim mongodb_performance_tests/setings.py
 
 How to run it
 =============
