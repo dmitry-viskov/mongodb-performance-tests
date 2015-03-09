@@ -1,0 +1,23 @@
+#button_show_resulsts {
+    display: none;
+}
+.sblock {
+    margin: 5px;
+}
+.sblock2 {
+    margin: 2px;
+    float: left;
+}
+.sblock3 {
+    margin: 2px;
+}
+.clear {
+    clear:both;
+}
+.warning {
+    color: red;
+}
+.cartblock {
+    width: 1024px;
+    height: 768px;
+}
