@@ -54,7 +54,7 @@ How to run it
 MySQL recommended settings
 =============
 
-::
+.. code-block:: bash
 
   [mysqld]
   ...
