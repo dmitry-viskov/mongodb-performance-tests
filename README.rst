@@ -48,11 +48,17 @@ How to run it
   # to run performance test using MySQL as database
   cd mongodb_performance_tests/tool
   python run_test.py --adapter mysql --name mysql_test_num_42
+  
+  # please, use "help" key to know all options of running tests command
+  python run_test.py --help
 
   # get results in csv format
   cd mongodb_performance_tests/tool
   python make_csv_report.py --report_dir=/home/user/mongo.csv --adapter=mongodb --test_name=mongodb_test_num_42
   python make_csv_report.py --report_dir=/home/user/mysql.csv --adapter=mysql --test_name=mysql_test_num_42
+  
+  # please, use "help" key to know all options of report creation command
+  python make_csv_report.py --help
 
   # run simple web site that show result of performance tests in graphics
   python mongodb_performance_tests/web/main.py
