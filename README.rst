@@ -38,7 +38,7 @@ How to run it
   # get results in csv format
   cd mongodb_performance_tests/tool
   python make_csv_report.py --report_dir=/home/user/mongo.csv --adapter=mongodb --test_name=mongodb_test_num_42
-  python make_csv_report.py --report_dir=/home/user/mysql.csv --adapter=mysql --test_name=mongodb_test_num_42
+  python make_csv_report.py --report_dir=/home/user/mysql.csv --adapter=mysql --test_name=mysql_test_num_42
 
   # run simple web site that show result of performance tests in graphics
   python mongodb_performance_tests/web/main.py
