@@ -41,7 +41,7 @@ def index():
 
     may_compare = available_adapters_cnt > 1
 
-    return prepare_template('main_template', adapters=[i for i,v in adps.iteritems() if v],
+    return prepare_template('main', adapters=[i for i,v in adps.iteritems() if v],
                             adapters_tests_json=dumps(data),
                             available_tests=data,
                             may_compare=may_compare)
@@ -61,7 +61,7 @@ def result(adapter, test_id):
 
     for i in proc_count:
         res.append(atr.get_result_by_processes(test_id, i))
-    return prepare_template('result_template', json_data=res, adapter_name=atr.get_name(),
+    return prepare_template('result', json_data=res, adapter_name=atr.get_name(),
                             labels=['proc count: %s' % i for i in proc_count])
 
 
@@ -69,6 +69,7 @@ def result(adapter, test_id):
 def compare(proc_count=None):
     res = []
     labels=[]
+    adapters=[]
 
     if not proc_count:
         proc_count = int(MAX_PROCESSES / 2)
@@ -77,9 +78,11 @@ def compare(proc_count=None):
         atr = adapter_factory(adapter)
         res.append(atr.get_result_by_processes(test_id, proc_count))
         labels.append(' - '.join([adapter, "%d proc" % proc_count]))
+        adapters.append(adapter)
 
-    return prepare_template('compare_template', json_data=res, labels=labels,
-                            current_proc_count=proc_count, max_proc=MAX_PROCESSES)
+    return prepare_template('compare', json_data=res, labels=labels,
+                            current_proc_count=proc_count, max_proc=MAX_PROCESSES,
+                            graph_title="Compare %s" % ', '.join(adapters))
 
 
 class StripPathMiddleware(object):
