@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import MySQLdb
+from mongodb_performance_tests.adapters.abstract import AbstractDBAdapter
 from mongodb_performance_tests.settings import MYSQL_DATABASE_NAME, MYSQL_DATABASE_HOST, MYSQL_DATABASE_PORT,\
     MYSQL_DATABASE_USER, MYSQL_DATABASE_PASSWORD
 
 
-class MySqlDBAdapter(object):
+class MySqlDBAdapter(AbstractDBAdapter):
     conn = None
     cursor = None
 
@@ -59,7 +60,7 @@ class MySqlDBAdapter(object):
             [[v['user_id'], v['name'], v['email'], v['is_deleted']] for v in data])
         self.conn.commit()
 
-    def get_test_id(self, test_name):
+    def create_new_test(self, test_name):
         self.cursor.execute("INSERT INTO test_names (name) VALUES (%s)", (test_name,))
         return self.cursor.lastrowid
 

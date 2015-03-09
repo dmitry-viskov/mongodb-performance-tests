@@ -4,10 +4,11 @@ import time
 import pymongo
 
 from pymongo import MongoClient
+from mongodb_performance_tests.adapters.abstract import AbstractDBAdapter
 from mongodb_performance_tests.settings import MONGO_DATABASE_NAME, MONGO_DATABASE_HOST, MONGO_DATABASE_PORT
 
 
-class MongoDBAdapter(object):
+class MongoDBAdapter(AbstractDBAdapter):
     conn = None
 
     def __init__(self):
@@ -29,7 +30,7 @@ class MongoDBAdapter(object):
         coll.create_index([('user_id', pymongo.ASCENDING), ('is_deleted', pymongo.ASCENDING)])
         coll.insert(data)
 
-    def get_test_id(self, test_name):
+    def create_new_test(self, test_name):
         test_id = int(time.time())
         test_names_coll = self.conn[MONGO_DATABASE_NAME].test_names
         test_names_coll.insert({'_id': test_id, 'name': test_name})

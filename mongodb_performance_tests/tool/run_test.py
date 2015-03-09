@@ -62,7 +62,7 @@ class MainTest(object):
         print 'Prepare database'
         adapter = adapter_factory(db_adapter)
         adapter.prepare_db()
-        test_id = adapter.get_test_id(test_name)
+        test_id = adapter.create_new_test(test_name)
 
         print ''
         print 'Create user documents'
