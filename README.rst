@@ -19,7 +19,7 @@ Requirements
 Installation
 ============
 
-The recommended way is to use virtualenv to run these tests::
+The recommended way is to use virtualenv to run these tests:
 
 .. code-block:: bash
 
