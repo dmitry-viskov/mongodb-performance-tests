@@ -32,7 +32,7 @@ After you have created virtualenv directory you should update settings.py file t
 
 .. code-block:: bash
 
-  vim mongodb_performance_tests/setings.py
+  vim mongodb_performance_tests/settings.py
 
 How to run it
 =============
