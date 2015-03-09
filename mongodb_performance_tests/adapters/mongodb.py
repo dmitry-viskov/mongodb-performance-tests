@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import time
 import pymongo
 
 from pymongo import MongoClient
-from ..settings import MONGO_DATABASE_NAME, MONGO_DATABASE_HOST, MONGO_DATABASE_PORT
+from mongodb_performance_tests.settings import MONGO_DATABASE_NAME, MONGO_DATABASE_HOST, MONGO_DATABASE_PORT
 
 
 class MongoDBAdapter(object):
@@ -16,26 +17,42 @@ class MongoDBAdapter(object):
         return 'MongoDB'
 
     def prepare_db(self):
-        self.conn.drop_database(MONGO_DATABASE_NAME)
+        users_coll = self.conn[MONGO_DATABASE_NAME].users
+        users_coll.drop()
+
         results_coll = self.conn[MONGO_DATABASE_NAME].results
-        results_coll.create_index('processes')
+        results_coll.create_index([("test_id", pymongo.ASCENDING),
+                                   ("processes", pymongo.ASCENDING)])
 
     def create_users(self, data):
         coll = self.conn[MONGO_DATABASE_NAME].users
         coll.create_index([('user_id', pymongo.ASCENDING), ('is_deleted', pymongo.ASCENDING)])
         coll.insert(data)
 
+    def get_test_id(self, test_name):
+        test_id = int(time.time())
+        test_names_coll = self.conn[MONGO_DATABASE_NAME].test_names
+        test_names_coll.insert({'_id': test_id, 'name': test_name})
+        return test_id
+
     def update_user(self, user_id, params):
         coll = self.conn[MONGO_DATABASE_NAME].users
         coll.update({"user_id": user_id}, {"$set": params}, upsert=False, multi=True)
 
-    def save_results(self, result_lst, processes_num):
+    def save_results(self, test_id, result_lst, processes_num):
         results_coll = self.conn[MONGO_DATABASE_NAME].results
-        results_coll.insert([{'processes': processes_num, 'value': v} for v in result_lst])
+        results_coll.insert([{'test_id': str(test_id), 'processes': processes_num, 'value': v} for v in result_lst])
 
-    def get_result_by_processes(self, process):
-        res = self.conn[MONGO_DATABASE_NAME].results.find({"processes": process}, fields={'_id': False, 'value': True})
+    def get_available_tests(self):
+        res = self.conn[MONGO_DATABASE_NAME].test_names.find().sort('_id', pymongo.DESCENDING)
+        data = []
+        for val in res:
+            data.append({'id': val['_id'], 'name': val['name']})
+        return data
 
+    def get_result_by_processes(self, test_id, process):
+        res = self.conn[MONGO_DATABASE_NAME].results.find({"test_id": str(test_id), "processes": int(process)},
+                                                          fields={'_id': False, 'value': True})
         data = []
         i = 1
 

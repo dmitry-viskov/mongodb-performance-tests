@@ -46,10 +46,12 @@ MySQL recommended settings
 
   [mysqld]
   ...
-  # 30-40% RAM
-  key_buffer = 1024M
+  # uses only in the case MyISAM tables
+  # but this benchmark should be done with InnoDB engine so
+  # this option isn't important for us
+  key_buffer = 32M
   ...
-  # 70-80% RAM
+  # 70-80% RAM. It's used
   innodb_buffer_pool_size = 2048M
   ...
   # 1/4 of "innodb_buffer_pool_size" value

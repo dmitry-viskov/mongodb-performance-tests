@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
+
 import sys
-from .settings import DEFAULT_DATABASE_ADAPTER
+from mongodb_performance_tests.settings import DEFAULT_DATABASE_ADAPTER
 
 
 def adapter_factory(db_adapter):
@@ -12,6 +13,16 @@ def adapter_factory(db_adapter):
         return MySqlDBAdapter()
     else:
         raise Exception('Try to use unknown adapter')
+
+
+def get_all_available_adapters():
+    data = {}
+    for v in ['mongodb', 'mysql']:
+        try:
+            data[v] = adapter_factory(v)
+        except:
+            data[v] = False
+    return data
 
 
 def get_adapter_from_command_line():

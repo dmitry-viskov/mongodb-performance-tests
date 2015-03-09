@@ -4,8 +4,8 @@ import os
 import csv
 import datetime
 
-from ..settings import MAX_PROCESSES, CSV_REPORTS_DIR
-from ..common import adapter_factory, get_adapter_from_command_line
+from mongodb_performance_tests.settings import MAX_PROCESSES, CSV_REPORTS_DIR
+from mongodb_performance_tests.common import adapter_factory, get_adapter_from_command_line
 
 
 class ReportsCreator(object):

@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
 
+import os
+import sys
+
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..'))
+
 import time
+import datetime
 import random
+import argparse
 
 from multiprocessing.pool import Pool
-from ..settings import DOCS_PER_USER, MAX_PROCESSES, USERS_COUNT
-from ..common import adapter_factory, get_adapter_from_command_line
+from mongodb_performance_tests.settings import DOCS_PER_USER, MAX_PROCESSES, USERS_COUNT, DEFAULT_DATABASE_ADAPTER
+from mongodb_performance_tests.common import adapter_factory, get_adapter_from_command_line
 
 
 def create_users(params):
@@ -44,10 +51,18 @@ def update_users(params):
 
 class MainTest(object):
 
-    def run(self, db_adapter):
+    def run(self, test_name=None, db_adapter=None):
+
+        if db_adapter is None:
+            db_adapter = DEFAULT_DATABASE_ADAPTER
+        if test_name is None:
+            test_name = '_'.join([db_adapter, datetime.datetime.now().strftime("%Y-%m-%d %H:%M")])
+
+        print ''.join(['Running "', test_name, '" test'])
         print 'Prepare database'
         adapter = adapter_factory(db_adapter)
         adapter.prepare_db()
+        test_id = adapter.get_test_id(test_name)
 
         print ''
         print 'Create user documents'
@@ -83,7 +98,7 @@ class MainTest(object):
             print 'Test is finished! Save results'
             print ''
 
-            adapter.save_results(res, i)
+            adapter.save_results(test_id, res, i)
 
             print 'Full time:', full_time
             print ''
@@ -92,5 +107,12 @@ class MainTest(object):
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Run performance test.')
+    parser.add_argument('--name', help='test name (current timestamp will be used by default)')
+    parser.add_argument('--adapter', help=''.join(['DB adapter ("',
+                                                   DEFAULT_DATABASE_ADAPTER,
+                                                   '" will be used by default)']))
+    args = parser.parse_args()
+
     mt = MainTest()
-    mt.run(get_adapter_from_command_line())
+    mt.run(args.name, args.adapter)
