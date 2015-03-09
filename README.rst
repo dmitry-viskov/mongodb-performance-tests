@@ -21,37 +21,35 @@ Installation
 
 The recommended way is to use virtualenv to run these tests::
 
-```bash
-mkdir venv && echo "Virtualenv directory" > venv/README
-virtualenv --no-site-packages --prompt="(mongodb-performance-tests)" venv
-source venv/bin/activate
-pip install -r requirements.txt
+.. code-block:: bash
 
-```  
+  mkdir venv && echo "Virtualenv directory" > venv/README
+  virtualenv --no-site-packages --prompt="(mongodb-performance-tests)" venv
+  source venv/bin/activate
+  pip install -r requirements.txt
 
 How to run it
 =============
 
-```bash
-source venv/bin/activate
+.. code-block:: bash
+  
+  source venv/bin/activate
 
-# to run performance test using MongoDB as database
-cd mongodb_performance_tests/tool
-python run_test.py --adapter mongodb --name mongodb_test_num_42
+  # to run performance test using MongoDB as database
+  cd mongodb_performance_tests/tool
+  python run_test.py --adapter mongodb --name mongodb_test_num_42
 
-# to run performance test using MySQL as database
-cd mongodb_performance_tests/tool
-python run_test.py --adapter mysql --name mysql_test_num_42
+  # to run performance test using MySQL as database
+  cd mongodb_performance_tests/tool
+  python run_test.py --adapter mysql --name mysql_test_num_42
 
-# get results in csv format
-cd mongodb_performance_tests/tool
-python make_csv_report.py --report_dir=/home/user/mongo.csv --adapter=mongodb --test_name=mongodb_test_num_42
-python make_csv_report.py --report_dir=/home/user/mysql.csv --adapter=mysql --test_name=mysql_test_num_42
+  # get results in csv format
+  cd mongodb_performance_tests/tool
+  python make_csv_report.py --report_dir=/home/user/mongo.csv --adapter=mongodb --test_name=mongodb_test_num_42
+  python make_csv_report.py --report_dir=/home/user/mysql.csv --adapter=mysql --test_name=mysql_test_num_42
 
-# run simple web site that show result of performance tests in graphics
-python mongodb_performance_tests/web/main.py
-
-```
+  # run simple web site that show result of performance tests in graphics
+  python mongodb_performance_tests/web/main.py
 
 MySQL recommended settings
 =============
