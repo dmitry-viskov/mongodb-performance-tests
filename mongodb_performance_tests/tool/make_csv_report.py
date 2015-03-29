@@ -9,13 +9,15 @@ import csv
 import datetime
 import argparse
 
-from mongodb_performance_tests.settings import MAX_PROCESSES, CSV_REPORTS_DEFAULT_DIR, DEFAULT_DATABASE_ADAPTER
+from mongodb_performance_tests.settings import MAX_PROCESSES, USERS_COUNT,\
+    CSV_REPORTS_DEFAULT_DIR, DEFAULT_DATABASE_ADAPTER
 from mongodb_performance_tests.common import adapter_factory
 
 
 class ReportsCreator(object):
 
     def make(self, test_name, report_dir, db_adapter):
+
         if db_adapter is None:
             db_adapter = DEFAULT_DATABASE_ADAPTER
         if report_dir is None:
@@ -26,6 +28,7 @@ class ReportsCreator(object):
         test_id = None
 
         tests = adapter.get_available_tests()
+
         for v in tests:
             if (test_name is None) and ((test_id is None) or (test_id > v['id'])):
                 test_id = v['id']
@@ -40,29 +43,23 @@ class ReportsCreator(object):
         print "Creating csv report for test '%s' (%s)" % (test_name, csv_path)
 
         result = []
-        for i in range(1, MAX_PROCESSES + 1):
+        for i in xrange(1, MAX_PROCESSES + 1):
             res = adapter.get_result_by_processes(test_id, i)
             result.append([str(v[1]) for v in res])
 
         with open(csv_path, 'w+') as f:
             writer = csv.writer(f)
             writer.writerow([''.join(['proc', str(i)]) for i in range(1, MAX_PROCESSES + 1)])
-            got_result = True
 
-            while got_result:
+            for i in xrange(USERS_COUNT):
                 tmp_lst = []
-                got_result = False
 
-                for i in range(1, MAX_PROCESSES + 1):
-                    for v in result:
-                        try:
-                            tmp_lst.append(v[i-1])
-                            got_result = True
-                        except IndexError:
-                            tmp_lst.append("")
-
-                if got_result:
-                    writer.writerow(tmp_lst)
+                for v in result:
+                    try:
+                        tmp_lst.append(v[i])
+                    except IndexError:
+                        tmp_lst.append("")
+                writer.writerow(tmp_lst)
 
         print 'Finish!'
 
