@@ -60,6 +60,9 @@ How to run it
   # please, use "help" key to know all options of report creation command
   python make_csv_report.py --help
 
+  # example of csv reporting
+  python make_csv_report.py --report_dir ~/Temp --adapter mysql --test_name mysql_test_num_42
+
   # run simple web site that show result of performance tests in graphics
   python mongodb_performance_tests/web/main.py
 
