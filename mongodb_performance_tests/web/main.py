@@ -65,7 +65,7 @@ def result(adapter, test_id):
                             labels=['proc count: %s' % i for i in proc_count])
 
 
-@route('/compare/<proc_count:int>')
+@route('/compare/<proc_count:int>/')
 def compare(proc_count=None):
     res = []
     labels=[]

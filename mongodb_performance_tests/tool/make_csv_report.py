@@ -47,17 +47,24 @@ class ReportsCreator(object):
         with open(csv_path, 'w+') as f:
             writer = csv.writer(f)
             writer.writerow([''.join(['proc', str(i)]) for i in range(1, MAX_PROCESSES + 1)])
-            for i in range(1, MAX_PROCESSES + 1):
+            got_result = True
+
+            while got_result:
                 tmp_lst = []
-                for v in result:
-                    try:
-                        tmp_lst.append(v[i-1])
-                    except IndexError:
-                        pass
-                writer.writerow(tmp_lst)
+                got_result = False
+
+                for i in range(1, MAX_PROCESSES + 1):
+                    for v in result:
+                        try:
+                            tmp_lst.append(v[i-1])
+                            got_result = True
+                        except IndexError:
+                            tmp_lst.append("")
+
+                if got_result:
+                    writer.writerow(tmp_lst)
 
         print 'Finish!'
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Create CSV with performance tests results.')
