@@ -20,7 +20,7 @@ var available_tests = {{!adapters_tests_json}};
     <div class="clear"></div>
 </div>
 <div class="sblock">
-    <div class="sblock2">or compare DBs results:</div>
+    <div class="sblock2">or compare test results:</div>
     <div class="clear"></div>
     <div class="sblock2">
         %for i in range(1,3):
