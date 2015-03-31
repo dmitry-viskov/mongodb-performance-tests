@@ -31,8 +31,10 @@ $(document).ready(function() {
     $("#compare").click(function() {
         var url = '/compare/0?';
         var url_params = [];
+        var i = 0;
         $('select.compare').each(function() {
-            url_params.push($(this).attr('name') + '=' + $(this).val());
+            url_params.push('compare[' + i + ']=' + $(this).val());
+            i = i + 1;
         });
         location.href = url + url_params.join('&');
     });

@@ -23,19 +23,19 @@ var available_tests = {{!adapters_tests_json}};
     <div class="sblock2">or compare DBs results:</div>
     <div class="clear"></div>
     <div class="sblock2">
-    %for adapter,test in available_tests.iteritems():
-        <label for="select_{{adapter}}">{{adapter}}</label>:
-        %if isinstance(test, basestring):
-            <span class="warning">{{test}}</span>
-        %else:
-            <select id="select_{{adapter}}" name="{{adapter}}" class="compare">\\
-            %for val in test:
-            <option value="{{val['id']}}">{{val['name']}}</option>\\
+        %for i in range(1,3):
+        <div>
+            <select id="select_{{i}}" name="select_{{i}}" class="compare">\\
+            %for adapter,test in available_tests.iteritems():
+                %if not isinstance(test, basestring):
+                    %for val in test:
+                <option value="{{adapter}}|{{val['id']}}">{{adapter}}: {{val['name']}}</option>\\
+                    %end
+                %end
             %end
             </select>
+        </div>
         %end
-        <br />
-    %end
     </div>
     <div class="clear"></div>
     <div class="sblock3">

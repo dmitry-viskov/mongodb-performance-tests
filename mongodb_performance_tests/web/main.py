@@ -6,7 +6,7 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..'))
 
 from json import dumps
-from bottle import route, request, response, run, template, static_file, default_app, abort
+from bottle import route, request, run, template, static_file, default_app, abort
 from mongodb_performance_tests.common import adapter_factory, get_all_available_adapters
 from mongodb_performance_tests.settings import MAX_PROCESSES, WEBSERVER_HOST, WEBSERVER_PORT
 
@@ -37,7 +37,7 @@ def index():
             data[key] = ad.get_available_tests()
             available_adapters_cnt += 1
         else:
-            data[key] = '%s is unavailable' % key
+            data[key] = False
 
     may_compare = available_adapters_cnt > 1
 
@@ -61,7 +61,7 @@ def result(adapter, test_id):
 
     test_name = atr.get_test_name_by_id(test_id)
     if not test_name:
-        abort(404, ''.join(['Test with id "', test_id, '" not found']))
+        abort(404, "Test with id %s not found" % str(test_id))
 
     for i in proc_count:
         res.append(atr.get_result_by_processes(test_id, i))
@@ -72,21 +72,22 @@ def result(adapter, test_id):
 @route('/compare/<proc_count:int>')
 def compare(proc_count=None):
     res = []
-    labels=[]
-    adapters=[]
+    labels = []
+    adapters = []
 
     if not proc_count:
         proc_count = int(MAX_PROCESSES / 2)
 
-    for adapter, test_id in dict(request.query).iteritems():
+    for t, adapter_and_test_id in dict(request.query).iteritems():
+        adapter, test_id = tuple(adapter_and_test_id.split('|'))
         atr = adapter_factory(adapter)
         test_name = atr.get_test_name_by_id(test_id)
         if not test_name:
-            abort(404, ''.join(['Test with id "', test_id, '" not found']))
+            abort(404, "Test with id %s not found" % str(test_id))
 
         res.append(atr.get_result_by_processes(test_id, proc_count))
         labels.append("%s (%s) %d proc" % (adapter, test_name, proc_count))
-        adapters.append(adapter)
+        adapters.append("%s (%s)" % (adapter, test_id))
 
     return prepare_template('compare', json_data=res, labels=dumps(labels),
                             current_proc_count=proc_count, max_proc=MAX_PROCESSES,
