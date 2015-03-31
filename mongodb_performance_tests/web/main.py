@@ -6,7 +6,7 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..'))
 
 from json import dumps
-from bottle import route, request, response, run, template, static_file, default_app
+from bottle import route, request, response, run, template, static_file, default_app, abort
 from mongodb_performance_tests.common import adapter_factory, get_all_available_adapters
 from mongodb_performance_tests.settings import MAX_PROCESSES, WEBSERVER_HOST, WEBSERVER_PORT
 
@@ -37,7 +37,7 @@ def index():
             data[key] = ad.get_available_tests()
             available_adapters_cnt += 1
         else:
-            data[key] = ''.join([key, ' is unavailable'])
+            data[key] = '%s is unavailable' % key
 
     may_compare = available_adapters_cnt > 1
 
@@ -59,13 +59,17 @@ def result(adapter, test_id):
             proc_count.append(middle_proc_count)
         proc_count.append(MAX_PROCESSES)
 
+    test_name = atr.get_test_name_by_id(test_id)
+    if not test_name:
+        abort(404, ''.join(['Test with id "', test_id, '" not found']))
+
     for i in proc_count:
         res.append(atr.get_result_by_processes(test_id, i))
-    return prepare_template('result', json_data=res, adapter_name=atr.get_name(),
+    return prepare_template('result', json_data=res, graph_title=': '.join([atr.get_name(), test_name]),
                             labels=['proc count: %s' % i for i in proc_count])
 
 
-@route('/compare/<proc_count:int>/')
+@route('/compare/<proc_count:int>')
 def compare(proc_count=None):
     res = []
     labels=[]
@@ -76,11 +80,15 @@ def compare(proc_count=None):
 
     for adapter, test_id in dict(request.query).iteritems():
         atr = adapter_factory(adapter)
+        test_name = atr.get_test_name_by_id(test_id)
+        if not test_name:
+            abort(404, ''.join(['Test with id "', test_id, '" not found']))
+
         res.append(atr.get_result_by_processes(test_id, proc_count))
-        labels.append(' - '.join([adapter, "%d proc" % proc_count]))
+        labels.append("%s (%s) %d proc" % (adapter, test_name, proc_count))
         adapters.append(adapter)
 
-    return prepare_template('compare', json_data=res, labels=labels,
+    return prepare_template('compare', json_data=res, labels=dumps(labels),
                             current_proc_count=proc_count, max_proc=MAX_PROCESSES,
                             graph_title="Compare %s" % ', '.join(adapters))
 

@@ -35,5 +35,9 @@ class AbstractDBAdapter(object):
         pass
 
     @abstractmethod
+    def get_test_name_by_id(self, test_id):
+        pass
+
+    @abstractmethod
     def get_result_by_processes(self, test_id, process):
         pass

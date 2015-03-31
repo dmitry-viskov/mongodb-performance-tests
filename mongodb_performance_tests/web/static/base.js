@@ -29,7 +29,7 @@ $(document).ready(function() {
     });
 
     $("#compare").click(function() {
-        var url = '/compare/0/?';
+        var url = '/compare/0?';
         var url_params = [];
         $('select.compare').each(function() {
             url_params.push($(this).attr('name') + '=' + $(this).val());
@@ -40,7 +40,7 @@ $(document).ready(function() {
     /* ------- compare_template ------- */
 
     $("#proc").change(function () {
-        location.href = '/compare/' + $(this).val() + '/' + location.search;
+        location.href = '/compare/' + $(this).val()  + location.search;
     });
 
     /* ------- graphics ------- */

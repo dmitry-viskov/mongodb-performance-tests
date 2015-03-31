@@ -89,6 +89,12 @@ class MySqlDBAdapter(AbstractDBAdapter):
             data.append({'id': val[0], 'name': val[1]})
         return data
 
+    def get_test_name_by_id(self, test_id):
+        self.cursor.execute("SELECT name FROM test_names WHERE id = %s", (test_id,))
+        res = self.cursor.fetchone()
+        self.conn.commit()
+        return res[0] if res else None
+
     def get_result_by_processes(self, test_id, process):
         self.cursor.execute("SELECT value FROM results WHERE test_id = %s and processes = %s", (test_id, process,))
         res = self.cursor.fetchall()

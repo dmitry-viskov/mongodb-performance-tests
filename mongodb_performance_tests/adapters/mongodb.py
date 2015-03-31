@@ -51,6 +51,10 @@ class MongoDBAdapter(AbstractDBAdapter):
             data.append({'id': val['_id'], 'name': val['name']})
         return data
 
+    def get_test_name_by_id(self, test_id):
+        res = self.conn[MONGO_DATABASE_NAME].test_names.find_one({"_id": test_id})
+        return res['name'] if res else None
+
     def get_result_by_processes(self, test_id, process):
         res = self.conn[MONGO_DATABASE_NAME].results.find({"test_id": str(test_id), "processes": int(process)},
                                                           fields={'_id': False, 'value': True})
