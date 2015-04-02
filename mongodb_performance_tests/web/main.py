@@ -7,8 +7,8 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '
 
 from json import dumps
 from bottle import route, request, run, template, static_file, default_app, abort
+from mongodb_performance_tests import MAX_PROCESSES, WEBSERVER_HOST, WEBSERVER_PORT
 from mongodb_performance_tests.common import adapter_factory, get_all_available_adapters
-from mongodb_performance_tests.settings import MAX_PROCESSES, WEBSERVER_HOST, WEBSERVER_PORT
 
 CURRENT_SCRIPT_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'views')
 PATH_FOR_STATIC_RES = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static')

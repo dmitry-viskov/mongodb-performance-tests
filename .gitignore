@@ -38,3 +38,5 @@ nosetests.xml
 
 #virtualenv
 venv
+
+settings.py

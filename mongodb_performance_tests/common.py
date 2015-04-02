@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from mongodb_performance_tests.settings import DEFAULT_DATABASE_ADAPTER
+from mongodb_performance_tests import DEFAULT_DATABASE_ADAPTER
 
 
 def adapter_factory(db_adapter):

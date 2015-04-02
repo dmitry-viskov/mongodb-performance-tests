@@ -9,7 +9,7 @@ import csv
 import datetime
 import argparse
 
-from mongodb_performance_tests.settings import MAX_PROCESSES, USERS_COUNT,\
+from mongodb_performance_tests import MAX_PROCESSES, USERS_COUNT,\
     CSV_REPORTS_DEFAULT_DIR, DEFAULT_DATABASE_ADAPTER
 from mongodb_performance_tests.common import adapter_factory
 

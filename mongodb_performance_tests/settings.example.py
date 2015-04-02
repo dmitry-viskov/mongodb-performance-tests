@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import os
-import sys
 import tempfile
-
-sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
 WEBSERVER_HOST = '0.0.0.0'
 WEBSERVER_PORT = 8000

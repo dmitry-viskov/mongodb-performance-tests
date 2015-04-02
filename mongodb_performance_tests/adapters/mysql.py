@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import MySQLdb
-from mongodb_performance_tests.adapters.abstract import AbstractDBAdapter
-from mongodb_performance_tests.settings import MYSQL_DATABASE_NAME, MYSQL_DATABASE_HOST, MYSQL_DATABASE_PORT,\
+from mongodb_performance_tests import MYSQL_DATABASE_NAME, MYSQL_DATABASE_HOST, MYSQL_DATABASE_PORT,\
     MYSQL_DATABASE_USER, MYSQL_DATABASE_PASSWORD
+from mongodb_performance_tests.adapters.abstract import AbstractDBAdapter
 
 
 class MySqlDBAdapter(AbstractDBAdapter):

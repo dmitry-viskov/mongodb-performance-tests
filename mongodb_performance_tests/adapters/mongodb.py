@@ -4,8 +4,8 @@ import time
 import pymongo
 
 from pymongo import MongoClient
+from mongodb_performance_tests import MONGO_DATABASE_NAME, MONGO_DATABASE_HOST, MONGO_DATABASE_PORT
 from mongodb_performance_tests.adapters.abstract import AbstractDBAdapter
-from mongodb_performance_tests.settings import MONGO_DATABASE_NAME, MONGO_DATABASE_HOST, MONGO_DATABASE_PORT
 
 
 class MongoDBAdapter(AbstractDBAdapter):
@@ -33,7 +33,7 @@ class MongoDBAdapter(AbstractDBAdapter):
     def create_new_test(self, test_name):
         test_id = int(time.time())
         test_names_coll = self.conn[MONGO_DATABASE_NAME].test_names
-        test_names_coll.insert({'_id': test_id, 'name': test_name})
+        test_names_coll.insert({'_id': str(test_id), 'name': test_name})
         return test_id
 
     def update_user(self, user_id, params):
@@ -52,7 +52,7 @@ class MongoDBAdapter(AbstractDBAdapter):
         return data
 
     def get_test_name_by_id(self, test_id):
-        res = self.conn[MONGO_DATABASE_NAME].test_names.find_one({"_id": int(test_id)})
+        res = self.conn[MONGO_DATABASE_NAME].test_names.find_one({"_id": str(test_id)})
         return res['name'] if res else None
 
     def get_result_by_processes(self, test_id, process):

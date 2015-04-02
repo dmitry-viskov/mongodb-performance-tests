@@ -11,7 +11,7 @@ import random
 import argparse
 
 from multiprocessing.pool import Pool
-from mongodb_performance_tests.settings import DOCS_PER_USER, MAX_PROCESSES, USERS_COUNT, DEFAULT_DATABASE_ADAPTER
+from mongodb_performance_tests import DOCS_PER_USER, MAX_PROCESSES, USERS_COUNT, DEFAULT_DATABASE_ADAPTER
 from mongodb_performance_tests.common import adapter_factory
 
 
@@ -60,6 +60,7 @@ class MainTest(object):
 
         print ''.join(['Running "', test_name, '" test'])
         print 'Prepare database'
+
         adapter = adapter_factory(db_adapter)
         adapter.prepare_db()
         test_id = adapter.create_new_test(test_name)
