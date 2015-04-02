@@ -28,11 +28,13 @@ The recommended way is to use virtualenv to run these tests:
   source venv/bin/activate
   pip install -r requirements.txt
   
-After you have created virtualenv directory you should update settings.py file to implement your own enviroment settings:
+After you have created virtualenv directory you should create your settings.py file to implement your own enviroment settings:
 
 .. code-block:: bash
 
-  vim mongodb_performance_tests/settings.py
+  cd mongodb_performance_tests
+  cp settings.example.py settings.py
+  vim settings.py
 
 How to run it
 =============
@@ -66,7 +68,9 @@ How to run it
 MySQL recommended settings
 =============
 
-.. code-block:: bash
+As you know you could use any other database to check update operations performance. By default you may do it using MySQL databasee.
+But before you do it you should optimize your server environment. Because tests on default settings don't show anything. It is ugly way/
+code-block:: bash
 
   [mysqld]
   ...
