@@ -77,6 +77,8 @@ It is ugly way. Just below you could see recommended settings for MySQL database
 
   [mysqld]
   ...
+  max_connections = 10000
+  ...
   # uses only in the case MyISAM tables
   # but this benchmark should be done with InnoDB engine so
   # this options isn't important for us
