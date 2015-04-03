@@ -68,22 +68,32 @@ How to run it
 MySQL recommended settings
 =============
 
-As you know you could use any other database to check update operations performance. By default you may do it using MySQL databasee.
-But before you do it you should optimize your server environment. Because tests on default settings don't show anything. It is ugly way/
-code-block:: bash
+As you know you could use any other database to check update operations performance. By default you can do it using MySQL database.
+But before you do it please make sure that you have configured your database environment. Because tests with default settings don't show anything.
+It is ugly way. Just below you could see recommended settings for MySQL database (they are oriented on c3.2xlarge Amazon instance:
+15.0 GB RAM, 8 CPU, 160 Gb SSD).
+
+.. code-block:: bash
 
   [mysqld]
   ...
   # uses only in the case MyISAM tables
   # but this benchmark should be done with InnoDB engine so
-  # this option isn't important for us
+  # this options isn't important for us
   key_buffer = 32M
+  key_buffer_size = 3072M
   ...
-  # 70-80% RAM. It's used
-  innodb_buffer_pool_size = 2048M
+  query_cache_limit = 32M
+  query_cache_size  = 1024M
   ...
-  # 1/4 of "innodb_buffer_pool_size" value
-  innodb_log_file_size = 512M
+  # recommended to use 70-80% of RAM
+  innodb_buffer_pool_size = 8192M
+  ...
+  innodb_log_file_size = 256M
+  innodb_thread_concurrency = 16
+  ...
+  thread_cache = 32
+  thread_cache_size = 16
   ...
   # the log buffer is written out to the file at each commit,
   # but the flush to disk operation is not performed on it
