@@ -77,11 +77,7 @@ It is ugly way. Just below you could see recommended settings for MySQL database
 
   [mysqld]
   ...
-  # uses only in the case MyISAM tables
-  # but this benchmark should be done with InnoDB engine so
-  # this options isn't important for us
-  key_buffer = 32M
-  key_buffer_size = 3072M
+  max_connections = 10000
   ...
   query_cache_limit = 32M
   query_cache_size  = 1024M
@@ -89,7 +85,9 @@ It is ugly way. Just below you could see recommended settings for MySQL database
   # recommended to use 70-80% of RAM
   innodb_buffer_pool_size = 8192M
   ...
-  innodb_log_file_size = 256M
+  # very-very important param in case situation with a lot of writes
+  innodb_log_file_size = 512M
+  ...
   innodb_thread_concurrency = 16
   ...
   thread_cache = 32
@@ -98,4 +96,9 @@ It is ugly way. Just below you could see recommended settings for MySQL database
   # the log buffer is written out to the file at each commit,
   # but the flush to disk operation is not performed on it
   innodb_flush_log_at_trx_commit = 2
-
+  ...
+  # uses only in the case MyISAM tables
+  # but this benchmark should be done with InnoDB engine so
+  # this options isn't important for us
+  key_buffer = 32M
+  key_buffer_size = 3072M
