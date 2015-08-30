@@ -6,7 +6,7 @@ Little utility for performance tests of concurrent updates in mongodb
 Overview
 ========
 
-This is a simple test that shows mongodb global lock detrimental effects on system performance. You could compare updates
+This is the simple test that shows mongodb global lock detrimental effects on system performance. You could compare updates
 operations in MongoDB with the same operations in other DB systems (MySQL out of the box, but you could implement adapter for
 every other database and compare MongoDB updates with it).
 
@@ -71,7 +71,7 @@ MySQL recommended settings
 As you know you could use any other database to check update operations performance. By default you can do it using MySQL database.
 But before you do it please make sure that you have configured your database environment. Because tests with default settings don't show anything.
 It is ugly way. Just below you could see recommended settings for MySQL database (they are oriented on c3.2xlarge Amazon instance:
-15.0 GB RAM, 8 CPU, 160 Gb SSD).
+15.0 GB RAM, 8 vCPU, 160 Gb SSD).
 
 .. code-block:: bash
 
