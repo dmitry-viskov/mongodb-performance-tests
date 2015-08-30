@@ -22,12 +22,13 @@ var available_tests = {{!adapters_tests_json}};
 <div class="sblock">
     <div class="sblock2">or compare test results:</div>
     <div class="clear"></div>
+    %if may_compare:
     <div class="sblock2">
         %for i in range(1,3):
         <div>
             <select id="select_{{i}}" name="select_{{i}}" class="compare">\\
             %for adapter,test in available_tests.iteritems():
-                %if not isinstance(test, basestring):
+                %if isinstance(test, list):
                     %for val in test:
                 <option value="{{adapter}}|{{val['id']}}">{{adapter}}: {{val['name']}}</option>\\
                     %end
@@ -39,9 +40,10 @@ var available_tests = {{!adapters_tests_json}};
     </div>
     <div class="clear"></div>
     <div class="sblock3">
-    %if may_compare:
     <input type="button" name="compare" id="compare" value="Compare">
-    %end
     </div>
+    %else:
+    <div class="warning">There is no data to compare</div>
+    %end
     <div class="clear"></div>
 </div>
