@@ -1,0 +1,119 @@
+# -*- coding: utf-8 -*-
+
+import psycopg2
+from mongodb_performance_tests import PG_DATABASE_NAME, PG_DATABASE_HOST, PG_DATABASE_PORT,\
+    PG_DATABASE_USER, PG_DATABASE_PASSWORD
+from mongodb_performance_tests.adapters.abstract import AbstractDBAdapter
+
+
+class PostgreSqlDBAdapter(AbstractDBAdapter):
+    conn = None
+    cursor = None
+
+    def __init__(self):
+        self.conn = psycopg2.connect(host=PG_DATABASE_HOST, port=PG_DATABASE_PORT,
+                                    user=PG_DATABASE_USER, password=PG_DATABASE_PASSWORD, database=PG_DATABASE_NAME)
+        self.cursor = self.conn.cursor()
+
+    def get_name(self):
+        return 'PostgreSQL'
+
+    def prepare_db(self):
+        try:
+            self.cursor.execute("DROP INDEX IF EXISTS user_id_is_deleted;")
+            self.cursor.execute("DROP INDEX IF EXISTS resulsts_processes;")
+            self.cursor.execute("DROP INDEX IF EXISTS results_processes;")
+            self.cursor.execute("DROP TABLE IF EXISTS users;")
+        except psycopg2.Warning, e:
+            pass
+
+        self.cursor.execute("SET NAMES 'UTF8';")
+
+        self.cursor.execute(
+            "CREATE TABLE IF NOT EXISTS users (\
+                id serial PRIMARY KEY,\
+                user_id integer DEFAULT 0,\
+                name varchar(255) NOT NULL,\
+                email varchar(255) NOT NULL,\
+                is_deleted boolean NOT NULL DEFAULT false);"
+            )
+
+        self.cursor.execute(
+            "CREATE INDEX user_id_is_deleted ON users (user_id, is_deleted);"
+            )
+
+
+        self.cursor.execute(
+            "CREATE TABLE IF NOT EXISTS test_names (\
+                id serial PRIMARY KEY,\
+                name varchar(255) NOT NULL);"
+                )
+
+        self.cursor.execute(
+            "CREATE TABLE IF NOT EXISTS results (\
+                id serial PRIMARY KEY,\
+                test_id integer NOT NULL,\
+                processes integer NOT NULL DEFAULT 0,\
+                value decimal(30,15) NOT NULL DEFAULT 0);"
+                )
+
+        self.cursor.execute(
+            "CREATE INDEX results_processes ON results (test_id, processes);"
+            )
+        
+        self.conn.commit()
+
+    def create_users(self, data):
+        self.cursor.executemany(
+            """INSERT INTO users (user_id, name, email, is_deleted)
+                VALUES (%s, %s, %s, %s)""",
+            [[v['user_id'], v['name'], v['email'], v['is_deleted']] for v in data])
+        self.conn.commit()
+
+    def create_new_test(self, test_name):
+        self.cursor.execute("INSERT INTO test_names (name) VALUES (%s)", (test_name,))
+        return self.cursor.lastrowid
+
+    def update_user(self, user_id, params):
+        update_str = ','.join([''.join([v, '=%s']) for v in params.keys()])
+        values = params.values()
+        values.append(user_id)
+
+        self.cursor.execute(''.join(['UPDATE users SET ', update_str, ' WHERE user_id=%s']), values)
+        self.conn.commit()
+
+    def save_results(self, test_id, result_lst, processes_num):
+        self.cursor.executemany(
+            """INSERT INTO results (test_id, processes, value)
+                VALUES (%s, %s, %s)""",
+            [[test_id, processes_num, '%.6f' % round(v, 6)] for v in result_lst])
+        self.conn.commit()
+
+    def get_available_tests(self):
+        self.cursor.execute('SELECT id, name FROM test_names')
+        res = self.cursor.fetchall()
+        self.conn.commit()
+
+        data = []
+        for val in res:
+            data.append({'id': val[0], 'name': val[1]})
+        return data
+
+    def get_test_name_by_id(self, test_id):
+        self.cursor.execute("SELECT name FROM test_names WHERE id = %s", (test_id,))
+        res = self.cursor.fetchone()
+        self.conn.commit()
+        return res[0] if res else None
+
+    def get_result_by_processes(self, test_id, process):
+        self.cursor.execute("SELECT value FROM results WHERE test_id = %s and processes = %s", (test_id, process,))
+        res = self.cursor.fetchall()
+        self.conn.commit()
+
+        data = []
+        i = 1
+
+        for val in res:
+            data.append([i, float(val[0])])
+            i += 1
+        return data
