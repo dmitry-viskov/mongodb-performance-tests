@@ -50,7 +50,11 @@ How to run it
   # to run performance test using MySQL as database
   cd mongodb_performance_tests/tool
   python run_test.py --adapter mysql --name mysql_test_num_42
-  
+
+  # to run performance test using PostgreSQL as database
+  cd mongodb_performance_tests/tool
+  python run_test.py --adapter postgresql --name postgresql_test_num_42
+ 
   # please, use "help" key to know all options of running tests command
   python run_test.py --help
 
@@ -58,6 +62,7 @@ How to run it
   cd mongodb_performance_tests/tool
   python make_csv_report.py --report_dir ~/Temp --adapter mongodb --test_name mongodb_test_num_42
   python make_csv_report.py --report_dir ~/Temp --adapter mysql --test_name mysql_test_num_42
+  python make_csv_report.py --report_dir ~/Temp --adapter postgresql --test_name postgresql_test_num_42
 
   # please, use "help" key to know all options of report creation command
   python make_csv_report.py --help
