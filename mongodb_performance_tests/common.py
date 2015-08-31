@@ -11,13 +11,16 @@ def adapter_factory(db_adapter):
     elif db_adapter == 'mysql':
         from mongodb_performance_tests.adapters.mysql import MySqlDBAdapter
         return MySqlDBAdapter()
+    elif db_adapter == 'postgresql':
+        from mongodb_performance_tests.adapters.postgresql import PostgreSqlDBAdapter
+        return PostgreSqlDBAdapter()
     else:
         raise Exception('Try to use unknown adapter')
 
 
 def get_all_available_adapters():
     data = {}
-    for v in ['mongodb', 'mysql']:
+    for v in ['mongodb', 'mysql','postgresql']:
         try:
             data[v] = adapter_factory(v)
         except:
