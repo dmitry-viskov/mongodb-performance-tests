@@ -6,9 +6,8 @@ Little utility for performance tests of concurrent updates in mongodb
 Overview
 ========
 
-This is the simple test that shows mongodb global lock detrimental effects on system performance. You could compare updates
-operations in MongoDB with the same operations in other DB systems (MySQL out of the box, but you could implement adapter for
-every other database and compare MongoDB updates with it).
+This is the simple test that shows mongodb global lock detrimental effects on system performance. You could compare updates operations in MongoDB with the same operations in other DB systems. Adapters for MySQL and PostgreSQL are included out of the box. If you wish you could implement adapter for every other database and compare MongoDB updates with it. Some results of comparison between different versions of MongoDB and MySQL you could find here `http://strannikk.github.io/mongodb-performance-tests/ <http://strannikk.github.io/mongodb-performance-tests/>`_
+
 
 Requirements
 ============
@@ -107,3 +106,8 @@ It is ugly way. Just below you could see recommended settings for MySQL database
   # this options isn't important for us
   key_buffer = 32M
   key_buffer_size = 3072M
+
+Also
+=============
+
+If you wish you could find some additional informationin in `article in my personal blog <http://webenterprise.ru/mongodb-something-wrong/>`_ or in `article in my habrahabr blog <http://habrahabr.ru/post/265747/>`_ (rus)
