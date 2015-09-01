@@ -110,4 +110,4 @@ It is ugly way. Just below you could see recommended settings for MySQL database
 Also
 =============
 
-If you wish you could find some additional information in `article in my personal blog <http://webenterprise.ru/mongodb-something-wrong/>`_ or in `article in my habrahabr blog <http://habrahabr.ru/post/265747/>`_ (rus)
+You could find some additional information in `article in my personal blog <http://webenterprise.ru/mongodb-something-wrong/>`_ or in `article in my habrahabr blog <http://habrahabr.ru/post/265747/>`_ (rus)
